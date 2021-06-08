@@ -7,16 +7,21 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class StringMatcherUtilTest {
 
+	// current vacancies, open vacancies
+
 	@ParameterizedTest
-	@ValueSource(strings = {"See all jobs", "View job openings", " see all jobs "})
-	void matchViewJobListingLabel(String text) {
-	    assertTrue(StringMatcherUtil.matchesViewJobListingLabel(text));
+	@ValueSource(strings = { "See all jobs", "View job openings", " see all jobs ", "See positions",
+			"Current vacancies", "Check open positions", "Job search", "See open roles", "View Open Roles",
+			"Job Openings", "Featured Jobs" })
+	void testMatchViewJobListingLabel(String text) {
+		assertTrue(StringMatcherUtil.matchesViewJobListingLabel(text));
 	}
-	
+
 	@ParameterizedTest
-	@ValueSource(strings = {"Join us", "Careers", "Career", "Jobs", " Jobs "})
-	void matchCareerLinkLabel(String text) {
-	    assertTrue(StringMatcherUtil.matchesCareerLink(text));
+	@ValueSource(strings = { "Join us", "Careers", "Career", "Jobs", " Jobs ", "Join", "Career opportunities",
+			"Job openings" })
+	void testMatchCareerLinkLabel(String text) {
+		assertTrue(StringMatcherUtil.matchesCareerLink(text));
 	}
 
 }

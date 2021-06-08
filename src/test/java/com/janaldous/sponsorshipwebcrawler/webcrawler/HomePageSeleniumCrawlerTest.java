@@ -4,13 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.WebCrawlerCommand;
 import com.janaldous.sponsorshipwebcrawler.webcrawler.selenium.SeleniumConfig;
+import com.janaldous.sponsorshipwebcrawler.webcrawler.testutils.VariableSource;
 
 class HomePageSeleniumCrawlerTest {
 
@@ -22,39 +25,31 @@ class HomePageSeleniumCrawlerTest {
 		seleniumConfig = new SeleniumConfig();
 		homePageSeleniumCrawler = new HomePageSeleniumCrawler(seleniumConfig);
 	}
-	
+
 	@AfterAll
 	static void afterAll() {
 		seleniumConfig.getDriver().close();
 	}
-	
-	
-	@Test
-	void test() throws IOException {
-		WebCrawlerCommand result = homePageSeleniumCrawler.crawl("https://www.adludio.com/");
+
+	static Stream<Arguments> arguments = Stream.of(
+//			Arguments.of("https://www.adludio.com/", "https://apply.workable.com/adludio/?lng=en"),
+//			Arguments.of("https://www.adtechnology.com/", "https://www.adtechnology.com/company/careers"),
+//			Arguments.of("https://www.101ways.com/", "https://www.101ways.com/join-us/"),
+//			Arguments.of("https://www.100shapes.com/", "https://www.100shapes.com/careers/"),
+//			Arguments.of("https://www.zoopla.co.uk/", "https://careers.zoopla.co.uk/"),
+//			Arguments.of("https://www.adtechnology.com/", "https://www.adtechnology.com/company/careers"),
+//			Arguments.of("https://www.brainlabsdigital.com/", "https://www.brainlabsdigital.com/careers/"),
+//			Arguments.of("https://www.madebymany.com/", "https://www.madebymany.com/join"),
+//			Arguments.of("https://orionhealth.com/uk/", "https://orionhealth.com/uk/careers/job-search/"),
+			Arguments.of("http://www.scskeu.com/en/", "http://www.scskeu.com/en/career.html")
+		);
+
+	@ParameterizedTest
+	@VariableSource("arguments")
+	void testReturnsCareersUrl_whenCareersPageExists(String inputUrl, String expectedOutput) throws IOException {
+		WebCrawlerCommand result = homePageSeleniumCrawler.crawl(inputUrl);
 		assertNotNull(result);
-		assertEquals("https://apply.workable.com/adludio/?lng=en", result.getUrl());
-	}
-	
-	@Test
-	void testReturnsCareersUrl_whenCareersPageExists2() throws IOException {
-		WebCrawlerCommand result = homePageSeleniumCrawler.crawl("https://www.zoopla.co.uk/");
-		assertNotNull(result);
-		assertEquals("https://careers.zoopla.co.uk/", result.getUrl());
-	}
-	
-	@Test
-	void testReturnsCareersUrl_whenCareersPageExists() throws IOException {
-		WebCrawlerCommand result = homePageSeleniumCrawler.crawl("https://www.100shapes.com/");
-		assertNotNull(result);
-		assertEquals("https://www.100shapes.com/careers/", result.getUrl());
-	}
-	
-	@Test
-	void testReturnsCareersUrl_whenCareersPageExists_101ways() throws IOException {
-		WebCrawlerCommand result = homePageSeleniumCrawler.crawl("https://www.101ways.com/");
-		assertNotNull(result);
-		assertEquals("https://www.101ways.com/join-us/", result.getUrl());
+		assertEquals(expectedOutput, result.getUrl());
 	}
 
 }

@@ -30,9 +30,9 @@ public class HomePageSeleniumCrawler implements PageCrawler {
 	public WebCrawlerCommand crawl(String url) throws IOException {
 		log.info("going to " + url);
 		driver.navigate().to(url);
-		List<WebElement> cookiesButtons = driver.findElements(By.xpath("//button[contains(text(), 'Accept all cookies')]"));
+		List<WebElement> cookiesButtons = driver.findElements(By.xpath("//button[contains(text(), 'Accept')]"));
 		if (!cookiesButtons.isEmpty()) {
-			Optional<WebElement> optional = cookiesButtons.stream().filter(x -> x.getAttribute("innerText").toLowerCase().contains("accept all cookies")).findAny();
+			Optional<WebElement> optional = cookiesButtons.stream().filter(x -> x.getAttribute("innerText").toLowerCase().contains("accept")).findAny();
 			
 			optional.ifPresentOrElse(button -> {
 				JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -41,6 +41,9 @@ public class HomePageSeleniumCrawler implements PageCrawler {
 		}
 		List<WebElement> careersElems = driver.findElements(By.xpath("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'career')]]"));
 		careersElems.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jobs')]]")));
+		if (careersElems.isEmpty()) {
+			careersElems.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'join')]]")));
+		}
 		
 		List<String> potentialUrls = new ArrayList<>();
 		

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.PageType;
+import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.WebCrawlResult;
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.WebCrawlerCommand;
 import com.janaldous.sponsorshipwebcrawler.webcrawler.repository.JobOpeningRespository;
 import com.janaldous.sponsorshipwebcrawler.webcrawler.selenium.SeleniumConfig;
@@ -14,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class MainWebCrawler {
 
-	private HomePageCrawler homePageCrawler;
+	private HomePageSeleniumCrawler homePageCrawler;
 	
 	private WorkableCrawler workableCrawler;
 	
@@ -25,37 +26,41 @@ public class MainWebCrawler {
 	private JobOpeningRespository jobOpeningRepository;
 
 	private SeleniumConfig seleniumConfig;
+
+	private JobListingWebCrawler jobListingPageCrawler;
 	
 	public MainWebCrawler(SeleniumConfig seleniumConfig, JobOpeningRespository jobOpeningRepository) {
-		homePageCrawler = new HomePageCrawler();
 		this.seleniumConfig = seleniumConfig;
-		careersPageCrawler = new CareersPageCrawler(seleniumConfig);
-		workableCrawler = new WorkableCrawler(seleniumConfig);
+		this.homePageCrawler = new HomePageSeleniumCrawler(seleniumConfig);
+		this.careersPageCrawler = new CareersPageCrawler(seleniumConfig);
+		this.workableCrawler = new WorkableCrawler(seleniumConfig);
+		this.jobListingPageCrawler = new JobListingWebCrawler();
 		this.jobOpeningRepository = jobOpeningRepository;
-		queue = new LinkedList<>();
+		this.queue = new LinkedList<>();
 	}
 	
-	public String getCareersPageUrl(String homepageUrl) {
+	public WebCrawlResult getCareersPageUrl(String homepageUrl) {
 		queue.add(new WebCrawlerCommand(homepageUrl, PageType.HOMEPAGE));
-		String result = crawlLoop();
-		seleniumConfig.close();
+		WebCrawlResult result = crawlLoop();
 		return result;
 	}
 	
-	@SuppressWarnings("unused")
-	public String crawlLoop() {
-		String careersPageUrl = null;
+	private WebCrawlResult crawlLoop() {
+		WebCrawlerCommand lastCommand = null;
 		while (!queue.isEmpty()) {
-			WebCrawlerCommand command = queue.poll();
+			lastCommand = queue.poll();
 			try {
-				WebCrawlerCommand nextCommand = crawl(command);
+				WebCrawlerCommand nextCommand = crawl(lastCommand);
 				if (nextCommand == null) {
-					return null;
-				} else if (nextCommand.getPageType() == null) {
-					jobOpeningRepository.save(nextCommand.getJobOpenings());
-					return null;
+					return new WebCrawlResult(lastCommand.getUrl());
+				}
+				log.info("next url " + nextCommand.getUrl());
+				if (nextCommand.getPageType() == null) {
+					if (nextCommand.getJobOpenings() != null) {
+						jobOpeningRepository.save(nextCommand.getJobOpenings());
+					}
+					return new WebCrawlResult(lastCommand.getUrl());
 				} else {
-					careersPageUrl= nextCommand.getUrl();
 					queue.add(nextCommand);
 				}
 			} catch (IOException e) {
@@ -63,10 +68,10 @@ public class MainWebCrawler {
 				throw new RuntimeException(e);
 			}
 		}
-		return careersPageUrl;
+		return null;
 	}
 
-	public WebCrawlerCommand crawl(WebCrawlerCommand command) throws IOException {
+	private WebCrawlerCommand crawl(WebCrawlerCommand command) throws IOException {
 		String url = command.getUrl();
 		
 		if (url.contains("apply.workable")) {
@@ -77,6 +82,8 @@ public class MainWebCrawler {
 				return homePageCrawler.crawl(url);
 			case CAREERS:
 				return careersPageCrawler.crawl(url);
+			case JOB_LISTING:
+				return jobListingPageCrawler.crawl(url);
 			default:
 				throw new RuntimeException("page type not recognized " + command.getPageType());
 		}

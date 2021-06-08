@@ -28,14 +28,24 @@ public class CareersPageCrawler implements PageCrawler {
 		log.info("going to " + url);
 		driver.navigate().to(url);
 
-		List<WebElement> elemSeeJobs = driver.findElements(By.xpath("//a[contains(text(), 'job')]"));
-		elemSeeJobs.addAll(driver.findElements(By.xpath("//a[//*[contains(text(), 'job')]]")));
+		List<WebElement> elemSeeJobs = driver.findElements(By.xpath("//a[contains(translate(text(), 'JOB', 'job'), 'job')]"));
+		elemSeeJobs.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(text(), 'JOB', 'job'), 'job')]]")));
+		if (elemSeeJobs.isEmpty()) {
+			elemSeeJobs.addAll(driver.findElements(By.xpath("//a[contains(translate(text(), 'POSITION', 'position'), 'position')]")));
+			elemSeeJobs.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(text(), 'POSITION', 'position'), 'position')]]")));
+		}
 		
-		elemSeeJobs.forEach(x -> System.out.println(x.getAttribute("href") + " - " + x.getText()));
+		if (elemSeeJobs.isEmpty()) {
+			elemSeeJobs.addAll(driver.findElements(By.xpath("//a[contains(translate(text(), 'ROLE', 'role'), 'role')]")));
+			elemSeeJobs.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(text(), 'ROLE', 'role'), 'role')]]")));
+		}
+		
+		elemSeeJobs.forEach(x -> System.out.println(x.getText() + " - " + x.getAttribute("href")));
 		
 		Optional<WebElement> optElemSeeJobs = elemSeeJobs.stream()
 				.filter(elem -> StringMatcherUtil.matchesViewJobListingLabel(elem.getText()))
-				.filter(elem -> !url.equals(elem.getAttribute("href"))).findAny();
+				.filter(elem -> !url.equals(elem.getAttribute("href")))
+				.findAny();
 		
 		if (optElemSeeJobs.isPresent()) {
 			String urlCareers = optElemSeeJobs.get().getAttribute("href");
