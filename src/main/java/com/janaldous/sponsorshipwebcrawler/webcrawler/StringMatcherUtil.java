@@ -4,15 +4,17 @@ import java.util.regex.Pattern;
 
 public class StringMatcherUtil {
 
-	public static Pattern careerLinkLabel = Pattern.compile("\s*(career[s]?|job[s]?)\s*", Pattern.CASE_INSENSITIVE);
+	public final static Pattern careerLinkLabel = Pattern.compile("\s*(career[s]?|job[s]?|join us)\s*", Pattern.CASE_INSENSITIVE);
 
-	public static boolean matchesCareerLabel(String text) {
+	public static boolean matchesCareerLink(String text) {
+		text = text.trim();
 		return careerLinkLabel.matcher(text).matches();
 	}
 
-	public static Pattern viewJobListingLabel = Pattern.compile("w3schools", Pattern.CASE_INSENSITIVE);
+	public static Pattern viewJobListingLabel = Pattern.compile("(see|view).*(job).*", Pattern.CASE_INSENSITIVE);
 	
-	public static boolean matchesViewJobListingLabel(String text) {
+	public final static boolean matchesViewJobListingLabel(String text) {
+		text = text.trim();
 		return viewJobListingLabel.matcher(text).matches();
 	}
 	

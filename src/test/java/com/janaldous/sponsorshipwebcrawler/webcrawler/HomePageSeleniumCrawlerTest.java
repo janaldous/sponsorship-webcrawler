@@ -49,5 +49,12 @@ class HomePageSeleniumCrawlerTest {
 		assertNotNull(result);
 		assertEquals("https://www.100shapes.com/careers/", result.getUrl());
 	}
+	
+	@Test
+	void testReturnsCareersUrl_whenCareersPageExists_101ways() throws IOException {
+		WebCrawlerCommand result = homePageSeleniumCrawler.crawl("https://www.101ways.com/");
+		assertNotNull(result);
+		assertEquals("https://www.101ways.com/join-us/", result.getUrl());
+	}
 
 }

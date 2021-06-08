@@ -34,7 +34,7 @@ public class CareersPageCrawler implements PageCrawler {
 		elemSeeJobs.forEach(x -> System.out.println(x.getAttribute("href") + " - " + x.getText()));
 		
 		Optional<WebElement> optElemSeeJobs = elemSeeJobs.stream()
-				.filter(elem -> elem.getText().matches() || )
+				.filter(elem -> StringMatcherUtil.matchesViewJobListingLabel(elem.getText()))
 				.filter(elem -> !url.equals(elem.getAttribute("href"))).findAny();
 		
 		if (optElemSeeJobs.isPresent()) {
