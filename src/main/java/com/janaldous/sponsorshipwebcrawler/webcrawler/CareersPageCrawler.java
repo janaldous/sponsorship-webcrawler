@@ -40,7 +40,7 @@ public class CareersPageCrawler implements PageCrawler {
 			elemSeeJobs.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(text(), 'ROLE', 'role'), 'role')]]")));
 		}
 		
-		elemSeeJobs.forEach(x -> System.out.println(x.getText() + " - " + x.getAttribute("href")));
+		elemSeeJobs.forEach(x -> log.debug(x.getText() + " - " + x.getAttribute("href")));
 		
 		Optional<WebElement> optElemSeeJobs = elemSeeJobs.stream()
 				.filter(elem -> StringMatcherUtil.matchesViewJobListingLabel(elem.getText()))

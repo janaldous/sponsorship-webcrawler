@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -16,13 +20,14 @@ import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.WebCrawlerCommand;
 import com.janaldous.sponsorshipwebcrawler.webcrawler.selenium.SeleniumConfig;
 
 import lombok.extern.log4j.Log4j2;
+import us.codecraft.xsoup.Xsoup;
 
 @Log4j2
-public class HomePageSeleniumCrawler implements PageCrawler {
+public class HomePageSeleniumJsoupCrawler implements PageCrawler {
 
 	private WebDriver driver;
 	
-	public HomePageSeleniumCrawler(SeleniumConfig seleniumConfig) {
+	public HomePageSeleniumJsoupCrawler(SeleniumConfig seleniumConfig) {
 		driver = seleniumConfig.getDriver();
 	}
 
@@ -39,21 +44,23 @@ public class HomePageSeleniumCrawler implements PageCrawler {
 				executor.executeScript("arguments[0].click();", button);
 			}, () -> log.error("cannot interact with button"));
 		}
-		List<WebElement> careersElems = driver.findElements(By.xpath("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'career')]]"));
-		careersElems.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jobs')]]")));
+		
+		Document document = Jsoup.parse(driver.findElement(By.tagName("body")).getAttribute("outerHTML"));
+		Elements careersElems = Xsoup.compile("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'career')]]").evaluate(document).getElements();
+		careersElems.addAll(Xsoup.compile("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jobs')]]").evaluate(document).getElements());
 		if (careersElems.isEmpty()) {
-			careersElems.addAll(driver.findElements(By.xpath("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'join')]]")));
+			careersElems.addAll(Xsoup.compile("//a[//*[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'join')]]").evaluate(document).getElements());
 		}
 		
 		List<String> potentialUrls = new ArrayList<>();
 		
-		for (WebElement elem: careersElems) {
-			log.debug(elem.getAttribute("innerText"));
-			if (!StringMatcherUtil.matchesCareerLink(elem.getAttribute("innerText"))) continue;
+		for (Element elem: careersElems) {
+			log.debug(elem.attr("innerText"));
+			if (!StringMatcherUtil.matchesCareerLink(elem.attr("innerText"))) continue;
 			
-			if ("a".equals(elem.getTagName())) {
-				log.debug(elem.getAttribute("href"));
-				potentialUrls.add(elem.getAttribute("href"));
+			if ("a".equals(elem.tagName())) {
+				log.debug(elem.attr("href"));
+				potentialUrls.add(elem.attr("href"));
 				
 			}
 		}

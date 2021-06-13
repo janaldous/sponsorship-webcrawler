@@ -73,7 +73,9 @@ public class MainWebCrawler {
 
 	private WebCrawlerCommand crawl(WebCrawlerCommand command) throws IOException {
 		String url = command.getUrl();
-		
+		if (url.startsWith("mailto:")) {
+			return null;
+		}
 		if (url.contains("apply.workable")) {
 			return workableCrawler.crawl(url);
 		}

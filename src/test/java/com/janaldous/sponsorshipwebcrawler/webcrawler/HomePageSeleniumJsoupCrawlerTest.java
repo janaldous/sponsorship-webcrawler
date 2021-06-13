@@ -18,7 +18,7 @@ import com.janaldous.sponsorshipwebcrawler.webcrawler.testutils.VariableSource;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class HomePageSeleniumCrawlerTest {
+class HomePageSeleniumJsoupCrawlerTest {
 
 	private static HomePageSeleniumCrawler homePageSeleniumCrawler;
 	private static SeleniumConfig seleniumConfig;

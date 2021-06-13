@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class StringMatcherUtil {
 
-	public final static Pattern careerLinkLabel = Pattern.compile(".*(career[s]?|job[s]?|join( us)?).*", Pattern.CASE_INSENSITIVE);
+	public final static Pattern careerLinkLabel = Pattern.compile("(career[s]?|job[s]?|join( us)?).*", Pattern.CASE_INSENSITIVE);
 
 	public static boolean matchesCareerLink(String text) {
 		text = text.trim();
@@ -20,7 +20,7 @@ public class StringMatcherUtil {
 		return match;
 	}
 	
-	public static Pattern viewJobListingNoun = Pattern.compile(".*job( (search|openings))?.*", Pattern.CASE_INSENSITIVE);
+	public static Pattern viewJobListingNoun = Pattern.compile("job( (search|openings))?.*", Pattern.CASE_INSENSITIVE);
 	
 	private final static boolean matchesViewJobListingLabel2(String text) {
 		text = text.trim();

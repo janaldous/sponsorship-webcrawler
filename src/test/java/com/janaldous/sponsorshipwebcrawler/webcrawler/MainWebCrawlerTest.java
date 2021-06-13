@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -22,6 +23,13 @@ class MainWebCrawlerTest {
 	JobOpeningRespository jobOpeningRepository = new JobOpeningRespository();
 	MainWebCrawler webCrawler = new MainWebCrawler(seleniumConfig, jobOpeningRepository);
 	
+	static long startTime;
+	
+	@BeforeAll
+	public static void beforeAll() {
+		startTime = System.currentTimeMillis();
+	}
+	
 	@AfterEach
 	public void afterEach() {
 		jobOpeningRepository.clear();
@@ -30,6 +38,9 @@ class MainWebCrawlerTest {
 	@AfterAll
 	public static void afterAll() {
 		seleniumConfig.close();
+		long duration_s = (System.currentTimeMillis()-startTime) / 1000;
+		long duration_min = duration_s/60;
+		System.out.println("Finished at " + duration_min);
 	}
 	
 	static Stream<Arguments> arguments = Stream.of(
@@ -47,20 +58,20 @@ class MainWebCrawlerTest {
 //			Arguments.of("https://www.infostretch.com/", "https://www.infostretch.com/about/careers/", 0),
 //			Arguments.of("http://www.jayam.co.uk/", "http://www.jayam.co.uk/", 0),
 //			Arguments.of("https://www.konstructive.com/", "https://www.konstructive.com/careers", 0),
-//			Arguments.of("https://www.lyst.co.uk/", "https://www.lyst.co.uk/careers/", 0),
-//			Arguments.of("https://www.madebymany.com/", "https://www.madebymany.com/join", 0),
-//			Arguments.of("https://www.nodesagency.com/", "https://nodes.recruitee.com/", 0),
-//			Arguments.of("https://orionhealth.com/uk/", "https://orionhealth.com/uk/careers/job-search/", 0),
-//			Arguments.of("http://www.polarisoft.com/", "http://www.polarisoft.com/", 0),
-//			Arguments.of("https://www.quantcast.com/", "https://www.quantcast.com/careers/openings/", 0),
-//			Arguments.of("https://ripple.com/", "https://ripple.com/company/careers/all-jobs", 0),
-//			Arguments.of("http://www.scskeu.com/en/", "http://www.scskeu.com/en/career.html", 0),
-//			Arguments.of("https://www.currencycloud.com/", "https://currencycloud.pinpointhq.com/", 0),
-//			Arguments.of("https://www.unbiased.co.uk/", "https://careers.unbiased.co.uk/#section-jobs", 0),
-//			Arguments.of("https://www.vermeg.com/", "https://recruitment.vermeg.com/jobs/", 0),
-//			Arguments.of("https://whichit.co/", "https://whichit.co/jobs", 0)
-//			Arguments.of("https://www.xoomworks.com/", "https://content.xoomworks.com/xoomworks-group-job-listings", 0),
-//			Arguments.of("https://yayzy.com/", "https://yayzy.com/", 0),
+			Arguments.of("https://www.lyst.co.uk/", "https://www.lyst.co.uk/careers/", 0),
+			Arguments.of("https://www.madebymany.com/", "https://www.madebymany.com/join", 0),
+			Arguments.of("https://www.nodesagency.com/", "https://nodes.recruitee.com/", 0),
+			Arguments.of("https://orionhealth.com/uk/", "https://orionhealth.com/uk/careers/job-search/", 0),
+			Arguments.of("http://www.polarisoft.com/", "http://www.polarisoft.com/", 0),
+			Arguments.of("https://www.quantcast.com/", "https://www.quantcast.com/careers/openings/", 0),
+			Arguments.of("https://ripple.com/", "https://ripple.com/company/careers/all-jobs", 0),
+			Arguments.of("http://www.scskeu.com/en/", "http://www.scskeu.com/en/career.html", 0),
+			Arguments.of("https://www.currencycloud.com/", "https://currencycloud.pinpointhq.com/", 0),
+			Arguments.of("https://www.unbiased.co.uk/", "https://careers.unbiased.co.uk/#section-jobs", 0),
+			Arguments.of("https://www.vermeg.com/", "https://recruitment.vermeg.com/jobs/", 0),
+			Arguments.of("https://whichit.co/", "https://whichit.co/jobs", 0),
+			Arguments.of("https://www.xoomworks.com/", "https://content.xoomworks.com/xoomworks-group-job-listings", 0),
+			Arguments.of("https://yayzy.com/", "https://yayzy.com/", 0),
 			Arguments.of("https://www.zhero.co.uk/", "https://www.zhero.co.uk/careers-new/", 0)
 		);
 
