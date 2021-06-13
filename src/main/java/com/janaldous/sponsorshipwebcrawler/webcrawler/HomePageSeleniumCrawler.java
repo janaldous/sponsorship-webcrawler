@@ -10,6 +10,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.PageType;
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.WebCrawlerCommand;
@@ -17,11 +19,13 @@ import com.janaldous.sponsorshipwebcrawler.webcrawler.selenium.SeleniumConfig;
 
 import lombok.extern.log4j.Log4j2;
 
+@Component
 @Log4j2
 public class HomePageSeleniumCrawler implements PageCrawler {
 
 	private WebDriver driver;
 	
+	@Autowired
 	public HomePageSeleniumCrawler(SeleniumConfig seleniumConfig) {
 		driver = seleniumConfig.getDriver();
 	}

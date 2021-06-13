@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.stereotype.Component;
 
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.Job;
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.WebCrawlerCommand;
@@ -15,6 +16,7 @@ import com.janaldous.sponsorshipwebcrawler.webcrawler.selenium.SeleniumConfig;
 
 import lombok.extern.log4j.Log4j2;
 
+@Component
 @Log4j2
 public class WorkableCrawler implements PageCrawler {
 

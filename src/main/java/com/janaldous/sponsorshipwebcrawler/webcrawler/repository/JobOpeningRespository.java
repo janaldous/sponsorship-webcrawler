@@ -3,10 +3,13 @@ package com.janaldous.sponsorshipwebcrawler.webcrawler.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.janaldous.sponsorshipwebcrawler.webcrawler.domain.Job;
 
 import lombok.NonNull;
 
+@Component
 public class JobOpeningRespository {
 	
 	private List<Job> list;
