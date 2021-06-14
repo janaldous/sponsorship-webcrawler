@@ -1,4 +1,4 @@
-package com.janaldous.sponsorshipwebcrawler;
+package com.janaldous.sponsorshipwebcrawler.config;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
@@ -14,7 +14,7 @@ import org.springframework.messaging.MessageChannel;
 import com.janaldous.sponsorshipwebcrawler.service.domain.WebCrawlerRequest;
 
 @Configuration
-public class IntegrationConfig {
+public class InboundIntegrationConfig {
 
 	
 	@Bean

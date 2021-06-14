@@ -29,13 +29,10 @@ public class MainWebCrawler {
 
 	private JobOpeningRespository jobOpeningRepository;
 
-	private SeleniumConfig seleniumConfig;
-
 	private JobListingWebCrawler jobListingPageCrawler;
 	
 	@Autowired
 	public MainWebCrawler(SeleniumConfig seleniumConfig, JobOpeningRespository jobOpeningRepository) {
-		this.seleniumConfig = seleniumConfig;
 		this.homePageCrawler = new HomePageSeleniumCrawler(seleniumConfig);
 		this.careersPageCrawler = new CareersPageCrawler(seleniumConfig);
 		this.workableCrawler = new WorkableCrawler(seleniumConfig);
